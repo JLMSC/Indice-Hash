@@ -1,35 +1,40 @@
 """
 Ideias da aplicação:
-    1. Os registros serão armazenados em Tuplas.
-    2. As Tuplas serão armazenadas em Tabelas.
-    3. As Tabelas serão armazenadas em Paginas.
-    4. Os Bucket armazenarão Tuplas, i.e. seus 
-        registros, junto com um ponteiro para a 
-        Tabela da Pagina que a mesma se encontra. (Map)
-        Ex:. Bucket 1 -> "Fulano": 1
-    5. A Função Hash determinará, dado uma chave
+    [X] Os registros serão armazenados em Tuplas.
+    [X] As Tuplas serão armazenadas em Tabelas.
+    [X] As Tabelas serão armazenadas em Paginas.
+    [ ] TableScan !
+    [ ] Os Bucket armazenarão Tuplas, i.e. seus
+        registros, junto com um ponteiro para a
+        Tabela (índice) da Pagina que a mesma se encontra. (Map)
+        Ex:. Bucket 1 -> "Fulano": 1 (Índice da Pagina)
+        ! O armazenamento nas Bucket deve ser feito, também,
+        pela Função Hash.
+    [ ] A Função Hash determinará, dado uma chave
         qualquer, exemplo: "Fulano", em qual Bucket
         ela se encontrando, retornando então seu
         índice.
         Ex:. FHash("Fulano") -> 1 / "Fulano" em Bucket 1.
-    6. Depois de obtido o índice do Bucket de uma
+    [ ] Depois de obtido o índice do Bucket de uma
         chave qualquer, pegar o ponteiro da Pagina
         registrado com a chave.
         Ex:. FHash("Fulano") -> 1 / "Fulano" em Bucket 1
              Bucket1("Fulano") -> 1 (Ponteiro para a Tabela 1 da Pagina)
-    7. Depois de obtido o ponteiro/referência para a Tabela da Pagina,
+    [ ] Depois de obtido o ponteiro/referência para a Tabela (índice) da Pagina,
         Buscar na Tabela da Pagina a chave alvo, e então retornar a Tupla.
+    [ ] Interface Gráfica!!!!
 
     - Tabelas apontam para Tuplas
     - Tuplas apontam entre si (Linked List), será útil para um Table Scan (busca ordenada).
-    - Tuplas apontem para o índice das Tabelas nas Paginas (Informação contida/exibida no Bucket).
-    - Bucket tem tamanhos fixos (valor calculado).
+    - Tuplas apontam para o índice das Tabelas nas Paginas (Informação contida/exibida no Bucket).
+    - Bucket tem tamanhos fixos (valor calculado pela Função Hash).
     - Paginas tem tamanhos fixos (usuário que define).
     - Função Hash deve ter baixa dispersão.
 """
 
 from structs.Tupla import Tupla # pylint: disable=import-error
 from structs.Tabela import Tabela # pylint: disable=import-error
+from structs.Pagina import Pagina # pylint: disable=import-error
 
 def read_input(path: str) -> Tabela:
     """Faz a leitura de dados de um arquivo,
@@ -58,8 +63,12 @@ def read_input(path: str) -> Tabela:
 
 def main() -> None:
     """Função Principal."""
+    # FIXME: Tabela, Tupla, Bucket, Pagina DEVEM ser variáveis globais.
     # Pega a Tabela com todas as Tuplas registradas.
-    tabela: Tabela = read_input(path="input.txt")
+    tabela = read_input(path="input.txt")
+    # TODO: Pedir o tamanho da Pagina ao usuário. (Interface Gráfica)
+    pagina = Pagina(tamanho_pagina=10)
+    pagina.insert(tabela)
     print("T")
 
 if __name__ == "__main__":

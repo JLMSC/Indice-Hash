@@ -12,6 +12,7 @@ class Tabela:
     # Responsável pelo armazenamento das tuplas.
     tuplas: List[Tupla] = []
 
+    # TODO: Remover?
     def __init__(self) -> None:
         pass
 
@@ -25,5 +26,6 @@ class Tabela:
             na Tabela.
         """
         if len(self.tuplas) > 1:
+            # FIXME: Realmente precisa disso? Se o TableScan é uma busca ordenada, não faz mais sentido só percorrer a lista?
             self.tuplas[-1].proxima_tupla = tupla
         self.tuplas.append(tupla)

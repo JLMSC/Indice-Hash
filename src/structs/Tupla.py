@@ -5,17 +5,19 @@ representa uma linha na tabela.
 
 from typing import Any, TypeVar
 
-# TODO: Implementar a classe Tupla.
 class Tupla:
     """Representa a estrutura Tupla."""
     # Responsável pelo armazenamento dos registros.
     dado: Any
     # Aponta para o próximo elemento da lista (Linked List).
-    proxima_tupla: TypeVar("Tupla")
+    proxima_tupla: TypeVar("Tupla") # FIXME: Precisa disso aqui?
     # Aponta para o índice da Tabela na Pagina.
     indice_tabela: int
 
-    # TODO: Indice Tabela, alterar o indice da tabela quando a tabela for adicionado à pagina.
-
     def __init__(self, dado: Any) -> None:
+        """Cria uma Tupla com um dado qualquer.
+
+        Args:
+            dado (Any): O dado a ser armazenado na Tupla.
+        """
         self.dado = dado
