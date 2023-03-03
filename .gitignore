@@ -130,3 +130,6 @@ dmypy.json
 
 # Arquivos .pdf
 *.pdf
+
+# Pastas .vscode 
+*.vscode
