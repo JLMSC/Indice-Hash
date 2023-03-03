@@ -3,29 +3,72 @@ Contém todas as Tuplas construídas a partir do
 carregamento de algum arquivo de dados.
 """
 
-from typing import List
-from structs.Tupla import Tupla # pylint: disable=import-error
+# pylint: disable=import-error
 
-# TODO: Implementar a classe Tabela.
+from typing import List, Optional
+from structs.Tupla import Tupla
+
+# FIXME: Revisar e testar, principalmente o Table Scan.
+
 class Tabela:
     """Representa a estrutura Tabela."""
     # Responsável pelo armazenamento das tuplas.
-    tuplas: List[Tupla] = []
+    __tuplas: List[Tupla] = []
 
-    # TODO: Remover?
-    def __init__(self) -> None:
-        pass
+    def get_size(self) -> int:
+        """Retorna a quantidade de Tuplas na
+        Tabela.
+
+        Returns:
+            int: A qntd. de Tuplas na Tabela
+        """
+        return len(self.__tuplas)
+
+    def get_tuples(self) -> List[Tupla]:
+        """Retorna TODAS as Tuplas armazenadas
+        nesta Tabela.
+
+        Returns:
+            List[Tupla]: As Tuplas armazenadas
+            nesta Tabela.
+        """
+        return self.__tuplas
 
     def insert(self, tupla: Tupla) -> None:
-        """Insere um novo elemento na Tabela
-        e, também, faz com que a Tupla anterior
-        aponte para a nova Tupla inserida.
+        """Insere uma Tupla na Tabela.
 
         Args:
-            tupla (Tupla): A Tupla a ser registrada
+            tupla (Tupla): A Tupla a ser inserida
             na Tabela.
         """
-        if len(self.tuplas) > 1:
-            # FIXME: Realmente precisa disso? Se o TableScan é uma busca ordenada, não faz mais sentido só percorrer a lista?
-            self.tuplas[-1].proxima_tupla = tupla
-        self.tuplas.append(tupla)
+        self.__tuplas.append(tupla)
+
+    # FIXME: Esse método ta certo?
+    def table_scan(self, dado: str, quantidade_busca: Optional[int] = None) -> Tupla | None:
+        """Realiza uma busca (Table Scan) de um dado.
+
+        Args:
+            dado (str): O dado a ser procurado na Tabela.
+            quantidade_busca (int, optional): A quantidade de Tuplas
+            a serem procuradas na Tabela, caso esse valor seja ultrapassado
+            a busca para.
+            Valor padrão é o tamanho da Tabela: get_size().
+
+        Returns:
+            Tupla | None: Retorna o dado, caso seja encontrado ou nada.
+        """
+        # Qntd. de busca será a qntd. de Tuplas se nenhum valor for informado.
+        if quantidade_busca is None:
+            quantidade_busca = self.get_size()
+        # Qntd. inválida. (valores menores que 0 ou maiores que a qntd. de tuplas)
+        if 0 > quantidade_busca > self.get_size():
+            raise ValueError("Qntd. de busca inválido no Table Scan.")
+        # Itera de 0 à N, buscando por 'dado'
+        tupla_atual: Tupla | None
+        for i in range(0, quantidade_busca, 1):
+            tupla_atual = self.__tuplas[i]
+            if tupla_atual.get_data() == dado:
+                return tupla_atual
+        return None
+
+    # TODO: Precisa implementar "remove", "get_tuple_at_index" ?
