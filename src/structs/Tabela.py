@@ -5,7 +5,7 @@ carregamento de algum arquivo de dados.
 
 # pylint: disable=import-error
 
-from typing import List, Optional
+from typing import List, Optional, Union
 from structs.Tupla import Tupla
 
 # FIXME: Revisar e testar, principalmente o Table Scan.
@@ -43,8 +43,7 @@ class Tabela:
         """
         self.__tuplas.append(tupla)
 
-    # FIXME: Esse método ta certo?
-    def table_scan(self, dado: str, quantidade_busca: Optional[int] = None) -> Tupla | None:
+    def table_scan(self, dado: str, quantidade_busca: Optional[int] = None) -> Union[Tupla, None]:
         """Realiza uma busca (Table Scan) de um dado.
 
         Args:
@@ -55,7 +54,7 @@ class Tabela:
             Valor padrão é o tamanho da Tabela: get_size().
 
         Returns:
-            Tupla | None: Retorna o dado, caso seja encontrado ou nada.
+            Union[Tupla, None]: Retorna o dado, caso seja encontrado ou nada.
         """
         # Qntd. de busca será a qntd. de Tuplas se nenhum valor for informado.
         if quantidade_busca is None:
@@ -71,4 +70,4 @@ class Tabela:
                 return tupla_atual
         return None
 
-    # TODO: Precisa implementar "remove", "get_tuple_at_index" ?
+    # TODO: Precisa implementar "remove" ?
