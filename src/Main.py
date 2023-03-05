@@ -4,7 +4,7 @@ Ideias da aplicação:
     [X] As Tuplas serão armazenadas em Tabelas.
     [X] As Tabelas serão armazenadas em Paginas.
     [X] TableScan !
-    [ ] Os Bucket armazenarão Tuplas, i.e. seus
+    [X] Os Bucket armazenarão Tuplas, i.e. seus
         registros, junto com um ponteiro para a
         Tabela (índice) da Pagina que a mesma se encontra. (Map)
         Ex:. Bucket 1 -> "Fulano": 1 (Índice da Pagina)
@@ -37,7 +37,7 @@ Ideias da aplicação:
 from structs.Tupla import Tupla
 from structs.Tabela import Tabela
 from structs.Pagina import Pagina
-from structs.Bucket import Bucket
+from structs.Bucket import BucketManager
 
 def read_input(path: str) -> Tabela:
     """Faz a leitura de dados de um arquivo,
@@ -63,14 +63,13 @@ def read_input(path: str) -> Tabela:
     return _tabela
 
 # FIXME: Não esquecer da INTERFACE GRÁFICA!!!
+# FIXME: Tentar otimizar os Buckets, ta demorando pra inserir todos os 370105 dados.
 
 def main() -> None:
     """Função Principal."""
     # FIXME: Tabela, Tupla, Bucket, Pagina DEVEM ser variáveis globais (Facilitar o acesso na interface gráfica).
 
     # FIXME: TODAS AS ESTRUTURAS DEVEM TER AS VARIÁVEIS PRIVADAS.
-
-    # FIXME: Usar o método hash_function de FuncaoHash quando for fazer uma busca/inserção nos Buckets.
 
     # FIXME: Tamanho da Pagina DEVE ser passado DURANTE A INSTANCIAÇÃO DE PAGINA.
 
@@ -82,14 +81,22 @@ def main() -> None:
     pagina.insert(tabela)
 
     # # TODO: Exemplo de uma Table Scan (sem limite)
-    # result = tabela.table_scan("house")
-    # print(result)
-    # # TODO: Exemplo de uma Table Scan (com limite)
-    # result = tabela.table_scan("house", 31_415)
-    # print(result)
+    result = tabela.table_scan("house")
+    print(result)
 
-    # TODO: Tem que fazer o Bucket ainda.
-    # bucket: Bucket = Bucket(len(tabela.get_size()))
+    # # TODO: Exemplo de uma Table Scan (com limite)
+    result = tabela.table_scan("house", 31_415)
+    print(result)
+
+    # TODO: Exemplo BÁSICO da criação; inserção; busca; taxa de colisão; contagem de overflow.
+    bucket: BucketManager = BucketManager(tabela.get_size())
+    for t in tabela.get_tuples():
+        bucket.insert_data(t)
+    dado_a_ser_procurado = bucket.search_data("house")
+    print(dado_a_ser_procurado.get_data())
+    print(dado_a_ser_procurado.get_page_index())
+    print(bucket.get_collision_count(3))
+    print(bucket.get_overflow_count(3))
     print("T")
 
 if __name__ == "__main__":
