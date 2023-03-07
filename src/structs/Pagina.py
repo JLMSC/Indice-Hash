@@ -80,5 +80,22 @@ class Pagina:
             tupla.set_page_index(self.__indice_pagina_atual)
             self.__paginas[self.__indice_pagina_atual].append(tupla)
 
-    # TODO: Precisa implementar "search" e "remove" ?
+    def search(self, dado: Tupla, indice_pagina: int) -> Tupla | None:
+        """Procura por uma Tupla em uma determina Pagina.
+
+        Args:
+            dado (Tupla): A Tupla a ser procurada
+            indice_pagina (int): O índice da Pagina em que a Tupla
+            pode estar contida.
+
+        Returns:
+            Tupla | None: A Tupla caso seja encontrada, ou None
+            caso contrário.
+        """
+        for tupla in self.get_page_by_index(indice_pagina):
+            if tupla == dado:
+                return tupla
+        return None
+
+    # TODO: Precisa implementar "remove" ?
             
