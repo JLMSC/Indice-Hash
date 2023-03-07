@@ -150,12 +150,12 @@ class BucketManager:
         id_bucket: int = FuncaoHash.hash_function(dado, self.__quantidade_buckets)
         self.get_bucket_by_id(id_bucket).insert_data(dado)
 
-    def search_data(self, dado: Any) -> Tupla | None:
+    def search_data(self, dado: Tupla | str) -> Tupla | None:
         """Procura por uma Tupla em um Bucket qualquer,
         o Bucket é determinado pela Função Hash.
 
         Args:
-            dado (Any): A Tupla a ser procurada nos Buckets.
+            dado (Tupla | str): A Tupla a ser procurada nos Buckets.
 
         Returns:
             Tupla | None: Retorna a Tupla se ela for encontrada

@@ -15,12 +15,12 @@ Ideias da aplicação:
         ela se encontrando, retornando então seu
         índice.
         Ex:. FHash("Fulano") -> 1 / "Fulano" em Bucket 1.
-    [ ] Depois de obtido o índice do Bucket de uma
+    [X] Depois de obtido o índice do Bucket de uma
         chave qualquer, pegar o ponteiro da Pagina
         registrado com a chave.
         Ex:. FHash("Fulano") -> 1 / "Fulano" em Bucket 1
              Bucket1("Fulano") -> 1 (Ponteiro para a Tabela 1 da Pagina)
-    [ ] Depois de obtido o ponteiro/referência para a Tabela (índice) da Pagina,
+    [X] Depois de obtido o ponteiro/referência para a Tabela (índice) da Pagina,
         Buscar na Tabela da Pagina a chave alvo, e então retornar a Tupla.
     [ ] Interface Gráfica!!!! (Biblioteca tkinter)
 
@@ -80,15 +80,15 @@ def main() -> None:
     pagina: Pagina = Pagina(tamanho_pagina=100)
     pagina.insert(tabela)
 
-    # # TODO: Exemplo de uma Table Scan (sem limite)
+    # Exemplo de uma Table Scan (sem limite)
     result = tabela.table_scan("house")
     print(result)
 
-    # # TODO: Exemplo de uma Table Scan (com limite)
+    # Exemplo de uma Table Scan (com limite)
     result = tabela.table_scan("house", 31_415)
     print(result)
 
-    # TODO: Exemplo BÁSICO da criação; inserção; busca; taxa de colisão; contagem de overflow.
+    # Exemplo BÁSICO da criação; inserção; busca; taxa de colisão; contagem de overflow.
     bucket: BucketManager = BucketManager(tabela.get_size())
     for t in tabela.get_tuples():
         bucket.insert_data(t)
@@ -97,6 +97,10 @@ def main() -> None:
     print(dado_a_ser_procurado.get_page_index())
     print(bucket.get_collision_count(3))
     print(bucket.get_overflow_count(3))
+
+    # Exemplo BÁSICO de busca de Tupla em uma Pagina (via indice)
+    print(pagina.search(dado_a_ser_procurado, dado_a_ser_procurado.get_page_index()))
+
     print("T")
 
 if __name__ == "__main__":

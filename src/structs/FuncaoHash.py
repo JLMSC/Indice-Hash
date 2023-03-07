@@ -10,14 +10,14 @@ class FuncaoHash:
     """Representa uma Função Hash."""
 
     @staticmethod
-    def hash_function(dado: Tupla, quantidade_buckets: int) -> int:
+    def hash_function(dado: Tupla | str, quantidade_buckets: int) -> int:
         """Retorna um índice de algum Bucket.
         A Função Hash utiliza da ideia de índices círculares,
         somando todos os valores Unicode de uma 'chave' e retornando
         o resto da divisão da soma com a a qntd. de buckets.
 
         Args:
-            dado (Tupla): Uma Tupla qualquer de uma Tabela.
+            dado (Tupla | str): Uma Tupla qualquer de uma Tabela.
             quantidade_buckets (int): A qntd. de Buckets.
 
         Returns:
