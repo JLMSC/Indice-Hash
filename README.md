@@ -1,5 +1,5 @@
 # **Banco-De-Dados**
-Implementação de um **Banco de Dados** em **Python 3**
+Implementação de um **Índice HASH** comm **Python 3**
 
 ## Assets utilizados
 Ícone da aplicação :.
