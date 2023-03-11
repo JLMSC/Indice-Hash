@@ -9,8 +9,6 @@ from typing import Dict, List
 from structs.Tupla import Tupla
 from structs.Tabela import Tabela
 
-# FIXME: Revisar e testar.
-
 class Pagina:
     """Representa a estrutura Pagina."""
     # Tabelas contidas na Pagina.
@@ -38,6 +36,14 @@ class Pagina:
             int: O tamanho fixo das Paginas.
         """
         return self.__tamanho_pagina
+
+    def get_page_count(self) -> int:
+        """Retorna a quantidade de páginas.
+
+        Returns:
+            int: A qntd. de páginas.
+        """
+        return len(self.__paginas)
 
     def get_page_size(self, indice_pagina: int) -> int:
         """Retorna a quantidade de Tuplas em uma Pagina.
@@ -96,6 +102,3 @@ class Pagina:
             if tupla == dado:
                 return tupla
         return None
-
-    # TODO: Precisa implementar "remove" ?
-            
