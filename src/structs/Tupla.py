@@ -5,8 +5,6 @@ representa uma linha na tabela.
 
 from typing import Any
 
-# FIXME: Revisar e testar.
-
 class Tupla:
     """Representa a estrutura Tupla."""
     # Responsável pelo armazenamento dos registros.
@@ -47,5 +45,3 @@ class Tupla:
             indice_pagina (int): O índice de uma Pagina.
         """
         self.__indice_pagina = indice_pagina
-
-    # TODO: Precisa implementar "set/update_data" ?

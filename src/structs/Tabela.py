@@ -8,8 +8,6 @@ carregamento de algum arquivo de dados.
 from typing import List, Optional, Union
 from structs.Tupla import Tupla
 
-# FIXME: Revisar e testar, principalmente o Table Scan.
-
 class Tabela:
     """Representa a estrutura Tabela."""
     # Responsável pelo armazenamento das tuplas.
@@ -69,5 +67,3 @@ class Tabela:
             if tupla_atual.get_data() == dado:
                 return tupla_atual
         return None
-
-    # TODO: Precisa implementar "remove" ?
