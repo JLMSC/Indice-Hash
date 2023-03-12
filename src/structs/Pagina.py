@@ -3,9 +3,10 @@ Estrutura de dados que representa a divisão
 e alocação física da tabela na mídia de armazenamento.
 """
 
+from typing import Dict, List
+
 # pylint: disable=import-error
 
-from typing import Dict, List
 from structs.Tupla import Tupla
 from structs.Tabela import Tabela
 

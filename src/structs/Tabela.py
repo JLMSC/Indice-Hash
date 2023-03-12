@@ -3,9 +3,10 @@ Contém todas as Tuplas construídas a partir do
 carregamento de algum arquivo de dados.
 """
 
+from typing import List, Optional, Union
+
 # pylint: disable=import-error
 
-from typing import List, Optional, Union
 from structs.Tupla import Tupla
 
 class Tabela:
