@@ -23,12 +23,14 @@ class Application:
     width: int = 800
     height: int = 600
     # O Frame em que será renderizado os objetos/elementos da aplicação.
-    first_frame: Frame
-    second_frame: Frame
-    # A fonte usada nos 'Labels' da aplicação.
+    page_frame: Frame
+    search_frame: Frame
+    # A fonte usada nos textos da aplicação.
     label_font: Font
-    # A fonte usada nos 'Buttons' da aplicação.
+    # A fonte usada nos botões da aplicação.
     button_font: Font
+    # A fonte usada na sáida da aplicação.
+    output_font: Font
     # Contém todas as Tuplas registradas.
     table: Tabela
     # Contém a divisão e alocação da Tabela.
@@ -87,28 +89,32 @@ class Application:
         self.__setup_frames()
 
     def __configure_fonts(self) -> None:
-        """Define as fontes usadas nos 'widgets' da aplicação."""
-        # Define a fonte dos 'Labels' da aplicação.
+        """Define as fontes usadas nos objetos da aplicação aplicação."""
+        # Define a fonte dos textos da aplicação.
         self.label_font = Font(family="Callibri", size=16, weight="normal")
-        # Define a fonte dos 'Buttons' da aplicação.
+        # Define a fonte dos botões da aplicação.
         self.button_font = Font(size=12)
+        # Define a fonte da saída da aplicação.
+        self.output_font = Font(size=12)
+
 
     def __setup_frames(self) -> None:
         """Define os 'Frames' conforme a estrutura da aplicação."""
         # Cria o primeiro 'Frame'.
-        self.first_frame = Frame(self.master, relief="sunken")
-        self.first_frame.pack(
+        self.page_frame = Frame(self.master, relief="sunken")
+        self.page_frame.pack(
             fill="both", expand=False, padx=0.01 * self.width, pady=0.01 * self.height
         )
         # Configura o 'grid' do primeiro 'Frame'.
-        self.first_frame.grid_columnconfigure(0, weight=0)
-        self.first_frame.grid_columnconfigure(1, weight=1)
+        self.page_frame.grid_columnconfigure(0, weight=0)
+        self.page_frame.grid_columnconfigure(1, weight=1)
+
         # Cria o segundo 'Frame'.
-        self.second_frame = Frame(self.master, relief="sunken")
+        self.search_frame = Frame(self.master, relief="sunken")
         # Configura o 'grid' do segundo 'Frame'.
-        self.second_frame.grid_columnconfigure(0, weight=0)
-        self.second_frame.grid_columnconfigure(1, weight=1)
-        self.second_frame.grid_rowconfigure(3, weight=1)
+        self.search_frame.grid_columnconfigure(0, weight=0)
+        self.search_frame.grid_columnconfigure(1, weight=1)
+        self.search_frame.grid_rowconfigure(3, weight=1)
 
     def draw_label(self, frame: Frame, text: str, column: int, row: int, sticky: str) -> None:
         """Renderiza um 'Label' no 'Frame' alvo.
@@ -186,7 +192,7 @@ class Application:
         """
         Text(
             frame,
-            font=self.label_font
+            font=self.output_font
         ).grid(
             padx=0.01 * self.width,
             pady=0.01 * self.height,
@@ -198,17 +204,83 @@ class Application:
 
     def __draw_in_window(self) -> None:
         """Adiciona alguns objetos/elementos à aplicação."""
-        self.draw_label(self.first_frame, text="Tamanho da Página:", column=0, row=0, sticky="W")
-        self.draw_entry(self.first_frame, column=1, row=0, sticky="NSWE")
-        self.draw_button(self.first_frame, text="Ajustar Página", column=0, row=1, sticky="W", func=self.__adjust_page_size)
+        # Configura os objetos relacionados à manipulação da Página.
+        # Campo referente a inserção e identificação do tamanho da Página.
+        self.draw_label(
+            self.page_frame,
+            text="Tamanho da Página:",
+            column=0,
+            row=0,
+            sticky="W"
+        )
+        self.draw_entry(
+            self.page_frame,
+            column=1,
+            row=0,
+            sticky="NSWE"
+        )
+        self.draw_button(
+            self.page_frame,
+            text="Ajustar Página",
+            column=0,
+            row=1,
+            sticky="W",
+            func=self.__adjust_page_size
+        )
 
-        self.draw_label(self.second_frame, text="Chave a ser buscada:", column=0, row=0, sticky="W")
-        self.draw_entry(self.second_frame, column=1, row=0, sticky="NSWE")
-        self.draw_label(self.second_frame, text="Qntd. máxima de busca na Tabela:", column=0, row=1, sticky="W")
-        self.draw_entry(self.second_frame, column=1, row=1, sticky="NSWE")
-        self.draw_button(self.second_frame, text="Buscar na Tabela", column=0, row=2, sticky="W", func=self.__table_scan)
-        self.draw_button(self.second_frame, text="Buscar nos Buckets", column=1, row=2, sticky="E", func=self.__bucket_search)
-        self.draw_output(self.second_frame, column=0, row=3, sticky="NSWE")
+        # Configura os objetos relacionados à busca de uma chave.
+        # Campo referente a inserção e identificação de uma chave.
+        self.draw_label(
+            self.search_frame,
+            text="Chave a ser buscada:",
+            column=0,
+            row=0,
+            sticky="W"
+        )
+        self.draw_entry(
+            self.search_frame,
+            column=1,
+            row=0,
+            sticky="NSWE"
+        )
+        # Campo referente a quantificação de busca.
+        self.draw_label(
+            self.search_frame,
+            text="Qntd. máxima de busca na Tabela:",
+            column=0,
+            row=1,
+            sticky="W"
+        )
+        self.draw_entry(
+            self.search_frame,
+            column=1,
+            row=1,
+            sticky="NSWE"
+        )
+        # Botões de buscas.
+        self.draw_button(
+            self.search_frame,
+            text="Buscar na Tabela",
+            column=0,
+            row=2,
+            sticky="W",
+            func=self.__table_scan
+        )
+        self.draw_button(
+            self.search_frame,
+            text="Buscar nos Buckets",
+            column=1,
+            row=2,
+            sticky="E",
+            func=self.__bucket_search
+        )
+        # Campo de saída.
+        self.draw_output(
+            self.search_frame,
+            column=0,
+            row=3,
+            sticky="NSWE"
+        )
 
     def clear_output(self, output_widget: Text) -> None:
         """Limpa o conteúdo do 'Output'.
@@ -231,19 +303,19 @@ class Application:
     def __adjust_page_size(self) -> None:
         """Reajusta o tamanho da Página."""
         # Verifica a veracidade da entrada do usuário.
-        page_size: str = self.first_frame.children["!entry"].get()
+        page_size: str = self.page_frame.children["!entry"].get()
         if page_size.isdigit():
             # Reajusta a Página do Índice Hash.
             self.page = Pagina(int(page_size))
             self.page.insert(self.table)
             # Torna o segundo 'Frame' visível e ajusta-o.
-            if not self.second_frame.winfo_ismapped():
-                self.second_frame.pack(
+            if not self.search_frame.winfo_ismapped():
+                self.search_frame.pack(
                     fill="both", expand=True, padx=0.01 * self.width, pady=0.01 * self.height
                 )
-            # Pega o 'Output' e atualiza-o.
+            # Limpa a saída da aplicação e exibe novas informações.
             self.update_output(
-                self.second_frame.children["!text"],
+                self.search_frame.children["!text"],
                 f"1. O tamanho da Página foi reajustado para '{page_size}'!" +
                 f"\n2. Quantidade de Páginas - '{self.page.get_page_count()}'" +
                 f"\n3. '{self.table.get_size()}' - Tuplas foram registradas."
@@ -252,36 +324,36 @@ class Application:
     def __table_scan(self) -> None:
         """Realiza um Table Scan."""
         # Verifica a veracidade da entrada do usuário.
-        key: str = self.second_frame.children["!entry"].get()
-        search_size: str = self.second_frame.children["!entry2"].get()
+        key: str = self.search_frame.children["!entry"].get()
+        search_size: str = self.search_frame.children["!entry2"].get()
         if key.isalpha() and (search_size.isdigit() or not search_size):
             # Ajusta a qntd. de busca.
             search_size = int(search_size) if search_size else None
             # Realiza o Table Scan.
             tuple_from_table = self.table.table_scan(key, search_size)
-            # Pega o 'Output' e atualiza-o.
             # TODO: Só isso que tem que mostrar? precisa mostar a posição na tabela?
+            # Limpa a saída da aplicação e exibe novas informações.
             self.update_output(
-                self.second_frame.children["!text"],
+                self.search_frame.children["!text"],
                 f"1. Tupla '{tuple_from_table.get_data()}' encontrada!"
                 if tuple_from_table else
-                f"1. Nenhuma Tupla com o dado '{tuple_from_table.get_data()}' " +
+                f"1. Nenhuma Tupla com o dado '{key}' " +
                 f"foi encontrado em '{search_size}' buscas."
             )
 
     def __bucket_search(self) -> None:
         """Realiza uma busca nos Buckets."""
         # Verifica a veracidade da entrada do usuário.
-        key: str = self.second_frame.children["!entry"].get()
+        key: str = self.search_frame.children["!entry"].get()
         if key.isalpha():
             # Realiza a busca pela Tupla nos Buckets.
             tuple_from_bucket = self.bucket.search_data(key)
-            # Pega o 'Output' e atualiza-o.
-            # TODO: Só isso que tem que mostrar? precisa mostrar o índice do bucket? colisão? overflow?
+            # TODO: Precisa mostrar o índice do bucket? colisão dele? overflow?
+            # Limpa a saída da aplicação e exibe novas informações.
             self.update_output(
-                self.second_frame.children["!text"],
+                self.search_frame.children["!text"],
                 f"1. A Tupla '{tuple_from_bucket.get_data()}' foi encontrada!" +
-                f"\n2. Sua posição na Página é {tuple_from_bucket.get_page_index()}"
+                f"\n2. Sua posição na Página é '{tuple_from_bucket.get_page_index()}'"
                 if tuple_from_bucket else
                 f"1. Nenhuma Tupla com o dado '{key}' foi encontradon nos Buckets."
             )
