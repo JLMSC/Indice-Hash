@@ -3,11 +3,13 @@ Estrutura responsável pelo mapeamento de
 dados de busca em endereços de páginas.
 """
 
-# pylint: disable=import-error
-
 from math import log10
 from typing import Dict, List, Union, Any
+
+# pylint: disable=import-error
+
 from structs.Tupla import Tupla
+from structs.Tabela import Tabela
 from structs.FuncaoHash import FuncaoHash
 
 # FIXME: Testar mais, eu NÃO verifiquei se os Bucket tão armazenando direito.
@@ -139,6 +141,17 @@ class BucketManager:
         self.__calculate_bucket_capacity(quantidade_tuplas)
         # Inicializa os Buckets.
         self.__init_buckets()
+
+    def insert_data_from_table(self, tabela: Tabela) -> None:
+        """Insere TODAS as Tuplas de uma Tabela qualquer.
+
+        Args:
+            tabela (Tabela): A Tabela a ser inserido as Tuplas
+            nos Buckets.
+        """
+        if tabela is not None:
+            for tupla in tabela.get_tuples():
+                self.insert_data(tupla)
 
     def insert_data(self, dado: Tupla) -> None:
         """Insere uma Tupla em um determinado Bucket,
