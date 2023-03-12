@@ -103,14 +103,14 @@ class Bucket:
         else:
             self.__dados.append(dado)
 
-    def search_data(self, dado: Any) -> Tupla | None:
+    def search_data(self, dado: Any) -> Union[Tupla, None]:
         """Procura por uma determinada Tupla nesse Bucket.
 
         Args:
             dado (Any): A Tupla a ser procurada.
 
         Returns:
-            Tupla | None: Retorna a Tupla se a mesma for
+            Union[Tupla, None]: Retorna a Tupla se a mesma for
             encontrada ou "None" caso contrário.
         """
         for dado_bucket in self.__dados:
@@ -163,7 +163,8 @@ class BucketManager:
         id_bucket: int = FuncaoHash.hash_function(dado, self.__quantidade_buckets)
         self.get_bucket_by_id(id_bucket).insert_data(dado)
 
-    def search_data(self, dado: Tupla | str) -> Tupla | None:
+    # FIXME: Retornar o Bucket em que o dado está também.
+    def search_data(self, dado: Tupla | str) -> Union[Tupla, None]:
         """Procura por uma Tupla em um Bucket qualquer,
         o Bucket é determinado pela Função Hash.
 
@@ -171,7 +172,7 @@ class BucketManager:
             dado (Tupla | str): A Tupla a ser procurada nos Buckets.
 
         Returns:
-            Tupla | None: Retorna a Tupla se ela for encontrada
+            Union[Tupla, None]: Retorna a Tupla se ela for encontrada
             ou "None" caso contrário.
         """
         id_bucket: int = FuncaoHash.hash_function(dado, self.__quantidade_buckets)
