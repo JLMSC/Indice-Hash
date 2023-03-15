@@ -28,6 +28,7 @@ class Pagina:
         # Define o tamanho das Paginas.
         self.__tamanho_pagina = tamanho_pagina
         # Inicializa a primeira Pagina.
+        self.__paginas = {}
         self.__paginas[self.__indice_pagina_atual] = []
 
     def get_page_fixed_size(self) -> int:
