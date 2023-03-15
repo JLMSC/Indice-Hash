@@ -66,5 +66,5 @@ class Tabela:
         for i in range(0, quantidade_busca, 1):
             tupla_atual = self.__tuplas[i]
             if tupla_atual.get_data() == dado:
-                return tupla_atual
+                return self.get_tuples()[0:i+1]
         return None
