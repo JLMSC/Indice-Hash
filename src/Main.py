@@ -1,7 +1,5 @@
 """Função Principal."""
 
-from tkinter import Tk
-
 # pylint: disable=import-error
 
 from structs.Tupla import Tupla
@@ -34,9 +32,7 @@ def read_input(path: str) -> Tabela:
 def main() -> None:
     """Função Principal."""
     # Inicializa a aplicação.
-    root = Tk()
-    Application(root, read_input("input.txt"))
-    root.mainloop()
+    Application("Índice Hash", read_input("input.txt"))
 
 if __name__ == "__main__":
     main()
