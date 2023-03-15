@@ -163,8 +163,8 @@ class BucketManager:
         id_bucket: int = FuncaoHash.hash_function(dado, self.__quantidade_buckets)
         self.get_bucket_by_id(id_bucket).insert_data(dado)
 
-    # FIXME: Retornar o Bucket em que o dado está também.
-    def search_data(self, dado: Tupla | str) -> Union[Tupla, None]:
+    # FIXME: Tem coisa aqui
+    def search_data(self, dado: Tupla | str) -> Union[Union[Tupla, None], int]:
         """Procura por uma Tupla em um Bucket qualquer,
         o Bucket é determinado pela Função Hash.
 
@@ -172,18 +172,20 @@ class BucketManager:
             dado (Tupla | str): A Tupla a ser procurada nos Buckets.
 
         Returns:
-            Union[Tupla, None]: Retorna a Tupla se ela for encontrada
-            ou "None" caso contrário.
+            Union[Union[Tupla, None], int]: Retorna a Tupla se ela
+            for encontrada ou 'None' caso contrário e, também o índice
+            do bucket em que ela foi encontrada ou '-1' caso contrário.
         """
         id_bucket: int = FuncaoHash.hash_function(dado, self.__quantidade_buckets)
         bucket_alvo: Bucket = self.get_bucket_by_id(id_bucket)
         dado_alvo: Tupla | None = None
         while bucket_alvo is not None:
             dado_alvo = bucket_alvo.search_data(dado)
-            if dado == dado_alvo.get_data():
-                return dado_alvo
+            if dado_alvo is not None:
+                if dado == dado_alvo.get_data():
+                    return dado_alvo, id_bucket
             bucket_alvo = bucket_alvo.get_next_bucket()
-        return None
+        return None, -1
 
     def get_bucket_by_id(self, id_bucket: int) -> Bucket:
         """Retorna um Bucket, procurando-o pelo índice.
