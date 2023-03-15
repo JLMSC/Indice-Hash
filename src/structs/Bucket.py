@@ -12,9 +12,6 @@ from structs.Tupla import Tupla
 from structs.Tabela import Tabela
 from structs.FuncaoHash import FuncaoHash
 
-# FIXME: Testar mais, eu NÃO verifiquei se os Bucket tão armazenando direito.
-# FIXME: Ver se os dados ESTÃO SENDO ARMAZENADOS CORRETAMENTE nos Buckets e Overflows.
-# FIXME: Ver se a TAXA DE COLISÃO e a QNTD. DE OVERFLOW estão certas.
 class Bucket:
     """Representa a estrutura Bucket."""
     # O "Id" do Bucket. (Facilita a contagem de Overflow)
@@ -163,7 +160,6 @@ class BucketManager:
         id_bucket: int = FuncaoHash.hash_function(dado, self.__quantidade_buckets)
         self.get_bucket_by_id(id_bucket).insert_data(dado)
 
-    # FIXME: Tem coisa aqui
     def search_data(self, dado: Tupla | str) -> Union[Union[Tupla, None], int]:
         """Procura por uma Tupla em um Bucket qualquer,
         o Bucket é determinado pela Função Hash.
