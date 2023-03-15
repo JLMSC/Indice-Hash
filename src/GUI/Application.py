@@ -1,359 +1,172 @@
 """Representa um GUI."""
 
-from tkinter.font import Font
-from tkinter import Tk, PhotoImage, Text, Button
-from tkinter.ttk import Label, Frame, Entry, Style
+from tkinter.ttk import Style
+from tkinter import Tk, PhotoImage
 
 # pylint: disable=import-error
 
-from structs.Tabela import Tabela
 from structs.Pagina import Pagina
+from structs.Tabela import Tabela
 from structs.Bucket import BucketManager
+from GUI.containers.Master import Master
 
-# FIXME: Revisar função por função.
+class Application(Tk):
+    """Representa uma aplicação.
 
-# TODO: Implementar a Interface Gráfica.
-class Application:
-    """Interfáce Gráfica (GUI)."""
-    # A aplicação top-level principal.
-    master: Tk
+    Args:
+        Tk (Tk): Aplicação top-level.
+    """
+    # Comprimento e Largura da aplicação.
+    width: int
+    height: int
     # O tema da aplicação.
-    app_style: Style
-    # A largura e comprimento da aplicação.
-    width: int = 800
-    height: int = 600
-    # O Frame em que será renderizado os objetos/elementos da aplicação.
-    page_frame: Frame
-    search_frame: Frame
-    # A fonte usada nos textos da aplicação.
-    label_font: Font
-    # A fonte usada nos botões da aplicação.
-    button_font: Font
-    # A fonte usada na sáida da aplicação.
-    output_font: Font
-    # Contém todas as Tuplas registradas.
-    table: Tabela
-    # Contém a divisão e alocação da Tabela.
+    theme: Style
+    # Os contêineres da aplicação.
+    master_container: Master
+    # Variáveis referentes ao funcionamento do índice hash.
     page: Pagina
-    # Responsável pelo Mapeamento das chaves de busca.
+    table: Tabela
     bucket: BucketManager
 
-    def __init__(self, master: Tk = None, table: Tabela = None) -> None:
-        """Inicializa as principais variáveis da aplicação.
-
-        Args:
-            master (tk.Tk, optional): A aplicação top-level principal.
-            Valor padrão é "None".
-            table (Tabela, optional): A Tabela com todas as Tuplas registradas.
-            Valor padrão é "None".
-        """
-        # Define a aplicação top-level nesta aplicação.
-        self.master = master
-        # Define a Tabela com todas as Tuplas registradas.
+    def __init__(self, title: str, table: Tabela, width: int = 800, height: int = 600) -> None:
+        super().__init__()
+        # Configura as variáveis do índice hash.
         self.table = table
-        # Inicializa o Bucket.
         self.bucket = BucketManager(self.table.get_size())
-        # Insere as Tuplas da Tabela no Bucket.
         self.bucket.insert_data_from_table(self.table)
+        # Define o título da aplicação.
+        self.title(title)
+        # Define a resolução da aplicação.
+        self.width = width
+        self.height = height
+        self.geometry(f"{self.width}x{self.height}")
+        # Desabilita o redimensionamento da aplicação.
+        self.resizable(False, False)
+        # Define um ícone para a aplicação.
+        self.iconphoto(True, PhotoImage(file="src/GUI/assets/icon.png"))
         # Define um tema para a aplicação.
-        self.set_theme("plastik")
-        # Realiza as primeiras configurações na aplicação.
-        self.__first_time_setup()
-        # Adiciona alguns objetos/elementos à aplicação.
-        self.__draw_in_window()
+        self.apply_theme("plastik")
+        # Configura o contêiner principal da aplicação.
+        self.__configure_master_container()
+        # Faz a aplicação rodar indefinidamente.
+        self.mainloop()
 
-    def set_theme(self, theme: str) -> None:
+    def apply_theme(self, theme: str) -> None:
         """Define um tema para a aplicação.
 
         Args:
-            theme (str): O nome do tema.
+            theme (str): O tema a ser usado na aplicação.
         """
-        self.app_style = Style(self.master)
-        self.master.call("source", f"src/GUI/themes/{theme}/{theme}.tcl")
-        self.app_style.theme_use(theme)
+        self.theme = Style(self)
+        self.call("source", f"src/GUI/themes/{theme}/{theme}.tcl")
+        self.theme.theme_use(theme)
 
-    def __first_time_setup(self) -> None:
-        """Realiza as primeira configurações da aplicação,
-        configura nome da janela, tamanho, posicionamento etc."""
-        # Define o título da aplicação para "Índice Hash".
-        self.master.title("Índice Hash")
-        # Define a resolução da janela (800x600).
-        self.master.geometry(f"{self.width}x{self.height}")
-        # Impede o redimensionamento da aplicação.
-        self.master.resizable(False, False)
-        # Define o ícone da aplicação.
-        self.master.iconphoto(True, PhotoImage(file="src/GUI/assets/icon.png"))
-        # Define as fontes da aplicação.
-        self.__configure_fonts()
-        # Define os 'Frames' de acordo com a estrutura da aplicação.
-        self.__setup_frames()
+    def __configure_master_container(self) -> None:
+        """Configura o contêiner principal da aplicação."""
+        # Configura o grid da aplicação.
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
-    def __configure_fonts(self) -> None:
-        """Define as fontes usadas nos objetos da aplicação aplicação."""
-        # Define a fonte dos textos da aplicação.
-        self.label_font = Font(family="Callibri", size=16, weight="normal")
-        # Define a fonte dos botões da aplicação.
-        self.button_font = Font(size=12)
-        # Define a fonte da saída da aplicação.
-        self.output_font = Font(size=12)
+        # Inicializa o contêiner principal.
+        self.master_container = Master(self)
 
+        # Desenha o contêiner principal.
+        self.master_container.frame_grid(column=0, row=0, padx=0, pady=0)
 
-    def __setup_frames(self) -> None:
-        """Define os 'Frames' conforme a estrutura da aplicação."""
-        # Cria o primeiro 'Frame'.
-        self.page_frame = Frame(self.master, relief="sunken")
-        self.page_frame.pack(
-            fill="both", expand=False, padx=0.01 * self.width, pady=0.01 * self.height
+        # Configura o grid do contêiner principal dentro da aplicação.
+        self.master_container.configure_column(column_id=0, weight=1)
+        self.master_container.configure_row(row_id=0, weight=0)
+        self.master_container.configure_row(row_id=1, weight=1)
+        self.master_container.configure_row(row_id=2, weight=0)
+
+        # Renderiza os demais contêineres da aplicação no contêiner principal.
+        self.master_container.draw_body(padx=0.01 * self.width, pady=0.01 * self.height)
+
+        # Atualiza as informações no rodapé (Buckets).
+        self.master_container.render_to_footer(
+            bs=self.bucket.get_bucket_capacity(),
+            bc=self.bucket.get_bucket_count()
         )
-        # Configura o 'grid' do primeiro 'Frame'.
-        self.page_frame.grid_columnconfigure(0, weight=0)
-        self.page_frame.grid_columnconfigure(1, weight=1)
 
-        # Cria o segundo 'Frame'.
-        self.search_frame = Frame(self.master, relief="sunken")
-        # Configura o 'grid' do segundo 'Frame'.
-        self.search_frame.grid_columnconfigure(0, weight=0)
-        self.search_frame.grid_columnconfigure(1, weight=1)
-        self.search_frame.grid_rowconfigure(3, weight=1)
-
-    def draw_label(self, frame: Frame, text: str, column: int, row: int, sticky: str) -> None:
-        """Renderiza um 'Label' no 'Frame' alvo.
+    def adjust_page(self, new_page_size: int) -> None:
+        """Ajusta o tamanho das Páginas.
 
         Args:
-            frame (Frame): O 'Frame' onde será renderizado o 'Label'.
-            text (str): O texto a ser renderizado no 'Label'.
-            column (int): A coluna do 'Label' no 'Frame'.
-            row (int): A linha do 'Label' no 'Frame'.
-            sticky (str): A posição do 'Label' no 'Frame'.
+            new_page_size (int): O novo tamanho das Páginas.
         """
-        Label(
-            frame,
-            text=text,
-            font=self.label_font
-        ).grid(
-            padx=0.01 * self.width,
-            pady=0.01 * self.height,
-            column=column,
-            row=row,
-            sticky=sticky,
+        self.page = Pagina(new_page_size)
+        self.page.insert(self.table)
+        # Exibe na saída a quantidade de páginas criadas e o tamanho fixo.
+        self.master_container.render_to_output(
+            "1. O tamanho das páginas foi modificado!\n" +
+            f"2. Foram criadas '{self.page.get_page_count()}' novas " +
+            f"páginas de tamanho '{self.page.get_page_fixed_size()}'!"
+        )
+        # Deixar os demais contêineres (corpo e rodapé) visíveis.
+        self.master_container.unlock_containers(padx=0.01 * self.width, pady=0.01 * self.height)
+        # Atualiza o texto do rodapé.
+        self.master_container.render_to_footer(
+            ps=self.page.get_page_fixed_size(),
+            pc=self.page.get_page_count()
         )
 
-    def draw_entry(self, frame: Frame, column: int, row: int, sticky: str) -> None:
-        """Renderiza um 'Entry' no 'Frame' alvo.
+    def table_scan(self, key: str, count: int = None) -> None:
+        """Lista os 'N' primeiros registros até o registro desejado.
 
         Args:
-            frame (Frame): O 'Frame' onde será renderizado o 'Entry'.
-            column (int): A coluna do 'Entry' no 'Frame'.
-            row (int): A linha do 'Entry' no 'Frame'.
-            sticky (str): A posição do 'Entry' no 'Frame'.
+            key (str): A chave a ser buscada na tabela.
+            count (int, optional): A quantidade de registros a serem
+            listados.
+            Valor padrão é o tamanho da tabela.
         """
-        Entry(
-            frame,
-            font=self.button_font
-        ).grid(
-            padx=0.01 * self.width,
-            pady=0.01 * self.height,
-            column=column,
-            row=row,
-            sticky=sticky
-        )
-
-    def draw_button(self, frame: Frame, text: str, column: int, row: int, sticky: str, func) -> None:
-        """Renderiza um 'Button' no 'Frame' alvo.
-
-        Args:
-            frame (Frame): O 'Frame' onde será renderizado o 'Button'.
-            text (str): O texto a ser renderizado no 'Button'.
-            column (int): A coluna do 'Button' no 'Frame'.
-            row (int): A linha do 'Button' no 'Frame'.
-            sticky (str): A posição do 'Button' no 'Frame'.
-        """
-        Button(
-            frame,
-            text=text,
-            font=self.button_font,
-            command=func
-        ).grid(
-            padx=0.01 * self.width,
-            pady=0.01 * self.height,
-            column=column,
-            row=row,
-            sticky=sticky
-        )
-
-    def draw_output(self, frame: Frame, column: int, row: int, sticky: str) -> None:
-        """Renderiza um 'Output' no 'Frame' alvo.
-
-        Args:
-            frame (Frame): O 'Frame' onde será renderizado o 'Output'.
-            column (int): A coluna do 'Output' no 'Frame'.
-            row (int): A linha do 'Output' no 'Frame'.
-            sticky (str): A posição do 'Output' no 'Frame'.
-        """
-        Text(
-            frame,
-            font=self.output_font
-        ).grid(
-            padx=0.01 * self.width,
-            pady=0.01 * self.height,
-            column=column,
-            row=row,
-            columnspan=2,
-            sticky=sticky
-        )
-
-    def __draw_in_window(self) -> None:
-        """Adiciona alguns objetos/elementos à aplicação."""
-        # Configura os objetos relacionados à manipulação da Página.
-        # Campo referente a inserção e identificação do tamanho da Página.
-        self.draw_label(
-            self.page_frame,
-            text="Tamanho da Página:",
-            column=0,
-            row=0,
-            sticky="W"
-        )
-        self.draw_entry(
-            self.page_frame,
-            column=1,
-            row=0,
-            sticky="NSWE"
-        )
-        self.draw_button(
-            self.page_frame,
-            text="Ajustar Página",
-            column=0,
-            row=1,
-            sticky="W",
-            func=self.__adjust_page_size
-        )
-
-        # Configura os objetos relacionados à busca de uma chave.
-        # Campo referente a inserção e identificação de uma chave.
-        self.draw_label(
-            self.search_frame,
-            text="Chave a ser buscada:",
-            column=0,
-            row=0,
-            sticky="W"
-        )
-        self.draw_entry(
-            self.search_frame,
-            column=1,
-            row=0,
-            sticky="NSWE"
-        )
-        # Campo referente a quantificação de busca.
-        self.draw_label(
-            self.search_frame,
-            text="Qntd. máxima de busca na Tabela:",
-            column=0,
-            row=1,
-            sticky="W"
-        )
-        self.draw_entry(
-            self.search_frame,
-            column=1,
-            row=1,
-            sticky="NSWE"
-        )
-        # Botões de buscas.
-        self.draw_button(
-            self.search_frame,
-            text="Buscar na Tabela",
-            column=0,
-            row=2,
-            sticky="W",
-            func=self.__table_scan
-        )
-        self.draw_button(
-            self.search_frame,
-            text="Buscar nos Buckets",
-            column=1,
-            row=2,
-            sticky="E",
-            func=self.__bucket_search
-        )
-        # Campo de saída.
-        self.draw_output(
-            self.search_frame,
-            column=0,
-            row=3,
-            sticky="NSWE"
-        )
-
-    def clear_output(self, output_widget: Text) -> None:
-        """Limpa o conteúdo do 'Output'.
-
-        Args:
-            output_widget (Text): O 'Output' a ter o conteúdo limpado.
-        """
-        output_widget.delete("1.0", "end")
-
-    def update_output(self, output_widget: Text, text: str) -> None:
-        """Atualiza o 'Output' da aplicação.
-
-        Args:
-            output_widget (Text): O 'Output' a ter o conteúdo limpado.
-            text (str): O texto a ser inserido no 'Output' da aplicação.
-        """
-        self.clear_output(output_widget)
-        output_widget.insert("insert", text)
-
-    def __adjust_page_size(self) -> None:
-        """Reajusta o tamanho da Página."""
-        # Verifica a veracidade da entrada do usuário.
-        page_size: str = self.page_frame.children["!entry"].get()
-        if page_size.isdigit():
-            # Reajusta a Página do Índice Hash.
-            self.page = Pagina(int(page_size))
-            self.page.insert(self.table)
-            # Torna o segundo 'Frame' visível e ajusta-o.
-            if not self.search_frame.winfo_ismapped():
-                self.search_frame.pack(
-                    fill="both", expand=True, padx=0.01 * self.width, pady=0.01 * self.height
-                )
-            # Limpa a saída da aplicação e exibe novas informações.
-            self.update_output(
-                self.search_frame.children["!text"],
-                f"1. O tamanho da Página foi reajustado para '{page_size}'!" +
-                f"\n2. Quantidade de Páginas - '{self.page.get_page_count()}'" +
-                f"\n3. '{self.table.get_size()}' - Tuplas foram registradas."
+        # Faz o Table Scan nos 'N' primeiros registros.
+        tuples_range = self.table.table_scan(key, count)
+        if tuples_range:
+            self.master_container.render_to_output(
+                f"1. O registro com a chave '{key}' foi encontrado!\n" +
+                f"2. Estimativa de custo de acesso é de '{tuples_range[-1].get_page_index()}'\n" +
+                "3. Listagem das chaves do Table Scan:\n" +
+                '\n'.join(f"Chave: '{k.get_data()}'" for k in tuples_range)
+            )
+        else:
+            # Exibe na saída que nenhum registro com determinada chave foi encontrada.
+            self.master_container.render_to_output(
+                f"1. Nenhum registro com a chave '{key}' foi encontrada."
             )
 
-    def __table_scan(self) -> None:
-        """Realiza um Table Scan."""
-        # Verifica a veracidade da entrada do usuário.
-        key: str = self.search_frame.children["!entry"].get()
-        search_size: str = self.search_frame.children["!entry2"].get()
-        if key.isalpha() and (search_size.isdigit() or not search_size):
-            # Ajusta a qntd. de busca.
-            search_size = int(search_size) if search_size else None
-            # Realiza o Table Scan.
-            tuple_from_table = self.table.table_scan(key, search_size)
-            # TODO: Só isso que tem que mostrar? precisa mostar a posição na tabela?
-            # Limpa a saída da aplicação e exibe novas informações.
-            self.update_output(
-                self.search_frame.children["!text"],
-                f"1. Tupla '{tuple_from_table.get_data()}' encontrada!"
-                if tuple_from_table else
-                f"1. Nenhuma Tupla com o dado '{key}' " +
-                f"foi encontrado em '{search_size}' buscas."
+    def bucket_search(self, key: str) -> None:
+        """Procura por uma chave nos Buckets.
+
+        Args:
+            key (str): A chave a ser procurada nos buckets.
+        """
+        # Pega a tupla caso seja encontrada no bucket.
+        tuple_from_bucket, bucket_id = self.bucket.search_data(key)
+        if tuple_from_bucket:
+            # Exibe na saída se a chave foi encontrada e em qual bucket.
+            self.master_container.render_to_output(
+                f"1. O registro com a chave '{key}' foi encontrado no bucket '{bucket_id}'!\n" +
+                f"2. Esse registro pertence a Página '{tuple_from_bucket.get_page_index()}'"
+            )
+        else:
+            # Exibe na saída que nenhuma tupla com determinada chave foi encontrada.
+            self.master_container.render_to_output(
+                f"1. Nenhum registro com a chave '{key}' foi encontrado nos Buckets."
             )
 
-    def __bucket_search(self) -> None:
-        """Realiza uma busca nos Buckets."""
-        # Verifica a veracidade da entrada do usuário.
-        key: str = self.search_frame.children["!entry"].get()
-        if key.isalpha():
-            # Realiza a busca pela Tupla nos Buckets.
-            tuple_from_bucket = self.bucket.search_data(key)
-            # TODO: Precisa mostrar o índice do bucket? colisão dele? overflow?
-            # Limpa a saída da aplicação e exibe novas informações.
-            self.update_output(
-                self.search_frame.children["!text"],
-                f"1. A Tupla '{tuple_from_bucket.get_data()}' foi encontrada!" +
-                f"\n2. Sua posição na Página é '{tuple_from_bucket.get_page_index()}'"
-                if tuple_from_bucket else
-                f"1. Nenhuma Tupla com o dado '{key}' foi encontradon nos Buckets."
-            )
+    def get_bucket_info(self, bucket_id: int) -> None:
+        """Retorna as informações de um Bucket.
+
+        Args:
+            bucket_id (int): O índice de um Bucket.
+        """
+        # Pega a taxa de colisões de um bucket.
+        collision_count = self.bucket.get_collision_count(bucket_id)
+        # Pega a qntd. de overflows de um bucket.
+        overflow_count = self.bucket.get_overflow_count(bucket_id)
+        # Exibe na saída a taxa de colisão e a quantidade de overflows.
+        self.master_container.render_to_output(
+            f"1. Informações do bucket de índice '{bucket_id}'\n" +
+            f"2. Uma taxa de colisão de '{collision_count}'\n" +
+            f"3. Um overflow de '{overflow_count}'"
+        )
