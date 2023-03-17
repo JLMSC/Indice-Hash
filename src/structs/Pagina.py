@@ -3,7 +3,7 @@ Estrutura de dados que representa a divisão
 e alocação física da tabela na mídia de armazenamento.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Union
 
 # pylint: disable=import-error
 
@@ -90,7 +90,7 @@ class Pagina:
                 self.__indice_pagina_atual += 1
                 self.__paginas[self.__indice_pagina_atual] = []
 
-    def search(self, dado: Tupla, indice_pagina: int) -> Tupla | None:
+    def search(self, dado: Tupla, indice_pagina: int) -> Union[Union[Tupla, None], int]:
         """Procura por uma Tupla em uma determina Pagina.
 
         Args:
@@ -99,10 +99,10 @@ class Pagina:
             pode estar contida.
 
         Returns:
-            Tupla | None: A Tupla caso seja encontrada, ou None
-            caso contrário.
+            Union[Union[Tupla, None], int]: A Tupla caso seja encontrada, ou None
+            caso contrário, juntamente com a estimativa de custo de acesso.
         """
         for tupla in self.get_page_by_index(indice_pagina):
             if tupla == dado:
-                return tupla
-        return None
+                return tupla, 1
+        return None, -1
