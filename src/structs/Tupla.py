@@ -10,7 +10,7 @@ class Tupla:
     # Responsável pelo armazenamento dos registros.
     __dado: str
     # Aponta para o índice da Tabela na Pagina.
-    __indice_pagina: int
+    __indice_pagina: int = 0
 
     def __init__(self, dado: Any) -> None:
         """Cria uma Tupla com um dado qualquer.
