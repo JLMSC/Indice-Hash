@@ -210,6 +210,19 @@ class BucketManager:
         """
         return self.__capacidade_buckets
 
+    def get_dispersion_percentage(self) -> float:
+        """Retorna a porcentagem de dispersão nos Buckets.
+
+        Returns:
+            float: A porcentagem de dispersão nos Buckets.
+        """
+        # Calcula o total de colisões em TODOS os Buckets.
+        taxa_colisao: int = 0
+        for i in range(0, self.get_bucket_count()):
+            taxa_colisao += self.get_collision_count(i)
+        # Retorna a porcentagem, baseando-se na capacidade vezes quantidade.
+        return (taxa_colisao * 100) / (self.get_bucket_capacity() * self.get_bucket_count())
+
     def get_collision_count(self, id_bucket: int) -> int:
         """Retorna a taxa de colisão de um Bucket.
 
