@@ -84,6 +84,7 @@ class Application(Tk):
 
         # Atualiza as informações no rodapé (Buckets).
         self.master_container.render_to_footer(
+            pd=self.bucket.get_dispersion_percentage(),
             bs=self.bucket.get_bucket_capacity(),
             bc=self.bucket.get_bucket_count()
         )
@@ -143,10 +144,12 @@ class Application(Tk):
         # Pega a tupla caso seja encontrada no bucket.
         tuple_from_bucket, bucket_id = self.bucket.search_data(key)
         if tuple_from_bucket:
+            _, cost = self.page.search(tuple_from_bucket, tuple_from_bucket.get_page_index())
             # Exibe na saída se a chave foi encontrada e em qual bucket.
             self.master_container.render_to_output(
                 f"1. O registro com a chave '{key}' foi encontrado no bucket '{bucket_id}'!\n" +
-                f"2. Esse registro pertence a Página '{tuple_from_bucket.get_page_index()}'"
+                f"2. Estimativa de custo de acesso é de '{cost}'\n" +
+                f"3. Esse registro pertence a Página '{tuple_from_bucket.get_page_index()}'"
             )
         else:
             # Exibe na saída que nenhuma tupla com determinada chave foi encontrada.
