@@ -45,7 +45,7 @@ class Pagina:
         Returns:
             int: A qntd. de páginas.
         """
-        return len(self.__paginas)
+        return len(self.__paginas) - 1
 
     def get_page_size(self, indice_pagina: int) -> int:
         """Retorna a quantidade de Tuplas em uma Pagina.
@@ -80,13 +80,15 @@ class Pagina:
             as tuplas para inserção nas Paginas.
         """
         for tupla in tabela.get_tuples():
+            # Adiciona na Página se houver espaço.
+            if len(self.__paginas[self.__indice_pagina_atual]) < self.get_page_fixed_size():
+                # Adiciona uma Tupla à Pagina atual.
+                tupla.set_page_index(self.__indice_pagina_atual)
+                self.__paginas[self.__indice_pagina_atual].append(tupla)
             # Passa para a próxima Pagina.
-            if len(self.__paginas[self.__indice_pagina_atual]) > self.get_page_fixed_size():
+            if len(self.__paginas[self.__indice_pagina_atual]) >= self.get_page_fixed_size():
                 self.__indice_pagina_atual += 1
                 self.__paginas[self.__indice_pagina_atual] = []
-            # Adiciona uma Tupla à Pagina atual.
-            tupla.set_page_index(self.__indice_pagina_atual)
-            self.__paginas[self.__indice_pagina_atual].append(tupla)
 
     def search(self, dado: Tupla, indice_pagina: int) -> Tupla | None:
         """Procura por uma Tupla em uma determina Pagina.
