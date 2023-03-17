@@ -32,7 +32,7 @@ def read_input(path: str) -> Tabela:
 def main() -> None:
     """Função Principal."""
     # Inicializa a aplicação.
-    Application("Índice Hash", read_input("input.txt"))
+    Application("Índice Hash", read_input("words.txt"))
 
 if __name__ == "__main__":
     main()
