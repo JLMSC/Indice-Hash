@@ -92,7 +92,7 @@ class Body(Frame):
                command=self.__grab_table_scan_entries)\
             .grid(padx=padx, pady=pady, column=0, row=2, sticky="W")
         # Botão para pesquisar (Buckets).
-        Button(self, text="Pesquisar nos Buckets", font=self.body_button_font,
+        Button(self, text="Pesquisar", font=self.body_button_font,
                command=self.__grab_bucket_search_entries)\
             .grid(padx=padx, pady=pady, column=1, row=2, sticky="W")
 
