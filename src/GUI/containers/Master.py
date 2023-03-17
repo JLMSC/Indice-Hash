@@ -92,7 +92,8 @@ class Master(Frame):
         # Inicializa o rodapé.
         self.footer = Footer(self)
         # Configura o grid do rodapé dentro do contêiner principal.
-        self.footer.configure_columns(column_id=2, weight=1)
+        self.footer.configure_columns(column_id=1, weight=1)
+        self.footer.configure_columns(column_id=3, weight=1)
         # Renderiza os elementos contidos no rodapé.
         self.footer.draw_body(padx=padx, pady=pady)
 
@@ -108,12 +109,13 @@ class Master(Frame):
         # Desenha o rodapé no contêiner principal.
         self.footer.frame_grid(column=0, row=2, padx=padx, pady=pady)
 
-    def render_to_footer(self, ps: int = None, pc: int = None, bs: int = None, bc: int = None) -> None:
+    def render_to_footer(self, ps: int = None, pc: int = None, pd: int = None, bs: int = None, bc: int = None) -> None:
         """Atualiza os textos no rodapé.
 
         Args:
             ps (int, optional): O tamanho das Páginas.
             pc (int, optional): A quantidade de Páginas.
+            pd (int, optional): A porcentagem de dispersão.
             bs (int, optional): A capacidade dos Buckets.
             bc (int, optional): A quantidade de Buckets.
         """
@@ -121,6 +123,8 @@ class Master(Frame):
             self.footer.update_page_size(ps)
         if pc:
             self.footer.update_page_count(pc)
+        if pd:
+            self.footer.update_dispersion_percentage(pd)
         if bs:
             self.footer.update_bucket_size(bs)
         if bc:

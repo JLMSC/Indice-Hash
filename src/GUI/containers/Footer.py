@@ -66,6 +66,10 @@ class Footer(Frame):
         Label(self, text="Qntd. de Páginas: -", font=self.footer_text_font)\
             .grid(padx=padx, pady=pady, column=1, row=0, sticky="W")
 
+        # Texto indicando a porcentagem de dispersão.
+        Label(self, text="Porcentagem de Dispersão: -", font=self.footer_text_font)\
+            .grid(padx=padx, pady=pady, column=2, row=0, sticky="WE")
+
         # Texto indicando o tamanho dos buckets.
         Label(self, text="Capacidade dos Buckets: -", font=self.footer_text_font)\
             .grid(padx=padx, pady=pady, column=3, row=0, sticky="E")
@@ -89,13 +93,21 @@ class Footer(Frame):
         """
         self.children["!label2"].config(text=f"Qntd. de Páginas: {page_count}")
 
+    def update_dispersion_percentage(self, percentage: float) -> None:
+        """Atualiza o texto contendo a porcentagem de dispersão.
+
+        Args:
+            percentage (float): A porcentagem de dispersão.
+        """
+        self.children["!label3"].config(text=f"Porcentagem de Dispersão: {percentage:.2f}%")
+
     def update_bucket_size(self, bucket_size: int) -> None:
         """Atualiza o texto contendo a capacidade dos buckets.
 
         Args:
             bucket_size (int): A capacidade dos buckets.
         """
-        self.children["!label3"].config(text=f"Capacidade dos Buckets: {bucket_size}")
+        self.children["!label4"].config(text=f"Capacidade dos Buckets: {bucket_size}")
 
     def update_bucket_count(self, bucket_count: int) -> None:
         """Atualiza o texto contendo a quantidade de buckets.
@@ -103,4 +115,4 @@ class Footer(Frame):
         Args:
             bucket_count (int): A quantidade de buckets.
         """
-        self.children["!label4"].config(text=f"Qntd. de Buckets: {bucket_count}")
+        self.children["!label5"].config(text=f"Qntd. de Buckets: {bucket_count}")
